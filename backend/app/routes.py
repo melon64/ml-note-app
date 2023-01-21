@@ -7,6 +7,12 @@ from bson.json_util import loads, dumps
 import json
 import hashlib
 from app import users_collection, groups_collection, posts_collection
+import openai
+from app.config import settings
+from app import nlp
+
+
+openai.api_key = settings.OPENAI_API_KEY
 
 @app.route('/')
 def index():
@@ -127,17 +133,29 @@ def get_groups():
     else:
         return jsonify({'msg': 'No groups found'}), 404
 
-#create post endpoint
+#create post with image endpoint
 @app.route("/api/v1/posts", methods=["POST"])
 @jwt_required()
 def create_post():
     new_post = request.get_json()
     new_post["author"] = get_jwt_identity()
     new_post["content"] = new_post["content"]
-    new_post["tags"] = []
+    new_post["image"] = new_post["image"]
+    new_post["tags"] = new_post["tags"]
+    
+    response = openai.Completion.create(
+            model="text-davinci-003",
+            prompt=nlp.generate_prompt(new_post["content"]),
+            temperature=0.6,
+            max_tokens=1000,
+        )
 
+    new_post["suggestions"] = response["choices"][0]["text"].split(",")
     posts_collection.insert_one(new_post)
-    groups_collection.update_many({"members": get_jwt_identity(), "name": {"$in": new_post["groups"]}}, {"$push": {"posts": new_post["_id"]}})
+    print(response)
+
+    for group in users_collection.find_one({"username": get_jwt_identity()})["groups"]:
+        groups_collection.update_one({"_id": group }, {"$push": {"posts": new_post["_id"]}})
     return jsonify({'msg': 'Post created successfully'}), 201
 
 @app.route("/api/v1/users/<username>", methods=["GET"])
