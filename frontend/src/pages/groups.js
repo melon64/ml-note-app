@@ -1,4 +1,39 @@
+import { useEffect, useState } from 'react';
+import { isLoggedIn } from '../utils/auth';
+import GroupList from '../components/grouplist';
+import axios from 'axios';
 const Groups = () => {
+    const [groups, setGroups] = useState([]);
+    const [error, setError] = useState(null);
+    const [isPending, setIsPending] = useState(true);
+
+    useEffect(() => {
+        axios.get('http://localhost:5000/api/v1/groups/me')
+        .then(response => {
+            // if(!response.ok) {
+            //     throw Error('Could not fetch the data for that resource');
+            // }
+            setGroups(response.data);
+            setIsPending(false);
+        })
+        .catch(err => {
+            if(err.name === 'AbortError') {
+                console.log('fetch aborted');
+            }
+            else{
+                setError(err.message);
+                setIsPending(false);
+            }
+        });
+    }, []);
+
+    if(isLoggedIn()){
+        console.log("logged in")
+    }else{
+       window.location.href = '/login';
+    }
+    console.log(groups);
+
     return ( 
         <div>
             <link rel="stylesheet" href="index.css"></link>
@@ -22,7 +57,10 @@ const Groups = () => {
                 </div>
 
                 <div className="indgroups">
-                    <div className="groupcont"> 
+                {error && <div>{error}</div>}
+                {isPending && <div color="white">Loading...</div>}
+                {groups && <GroupList group={groups} />}
+                    {/* <div className="groupcont"> 
                         <p className="conttext">Group Name</p>
                         <p className="conttext">Recent Upload</p>
                         <p className="conttext">No. Members</p>
@@ -46,7 +84,7 @@ const Groups = () => {
                         <p className="conttext">Group Name</p>
                         <p className="conttext">Recent Upload</p>
                         <p className="conttext">No. Members</p>
-                    </div>
+                    </div> */}
                 </div>
 
             </div>

@@ -27,13 +27,14 @@ function App() {
     <Router>
       <Navbar />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/joingroup" element={<JoinGroup />} />
-        <Route path="/groups" element={<Groups />} />
-        <Route path="/docs" element={<Documents />} />
-        <Route path="/upload" element={<Upload />} />
-        <Route path="/login" element={<Login />} />
+        <Route exact path="/" element={<Home />} />
+        <Route exact path="/signup" element={<Signup />} />
+        <Route exact path="/joingroup" element={<JoinGroup />} />
+        <Route exact path="/groups" element={<Groups />} />
+        <Route exact path="/groups/:_id" element={<SpecGroups />} />
+        <Route exact path="/docs" element={<Documents />} />
+        <Route exact path="/upload" element={<Upload />} />
+        <Route exact path="/login" element={<Login />} />
       </Routes>
 
     </Router>
