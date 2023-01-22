@@ -1,4 +1,5 @@
 //import './App.css';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route}
     from 'react-router-dom';
 import Navbar from './components/navbar';
@@ -9,8 +10,15 @@ import Groups from './pages/groups';
 import Documents from './pages/docs';
 import Upload from './pages/upload';
 import Login from './pages/login';
+import { setAuthToken } from './utils/auth';
 
 function App() {
+
+  const token = localStorage.getItem("token");
+  if(token) {
+    setAuthToken(token);
+  }
+  
   return (
     <Router>
       <Navbar />
