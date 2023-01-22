@@ -12,7 +12,7 @@ from app.config import settings
 app = Flask(__name__)
 
 cors = CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
+#app.config['CORS_HEADERS'] = 'Content-Type'
 
 app.config['SECRET_KEY'] = settings.SECRET_KEY
 app.config['MONGO_URI'] = "mongodb+srv://admin:" + urllib.parse.quote(settings.MONGO_URI) +"@cluster0.ecbbfco.mongodb.net/?retryWrites=true&w=majority"

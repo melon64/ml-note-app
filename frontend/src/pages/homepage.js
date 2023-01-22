@@ -1,13 +1,19 @@
 import {Routes, Route, useNavigate} from 'react-router-dom';
 import Signup from './signup.js';
+import { isLoggedIn } from '../utils/auth.js';
 
 const Home = () => {
+    const loggedIn = isLoggedIn();
     const navigate = useNavigate();
     const handleClick = () => {
        navigate('/signup')
     }
 
+
     return ( 
+        
+
+
         <div>
             <title>Home</title>
             <link rel="stylesheet" href="index.css"></link>
@@ -29,9 +35,13 @@ const Home = () => {
                 <p class="slogan">
                   Lorem Ipsum ....
                 </p>
-                <button class='signup' onClick={handleClick}>
-                    Sign Up Now!
-                </button>
+                <div>
+                    {loggedIn
+                    ? <div><h1>Welcome Back!</h1>  <a href="/signup">Logout?</a></div>
+                    : <button class='signup' onClick={handleClick}>Sign Up Now!</button>
+                    }
+                </div>
+                
                 <Routes>
                     <Route path="/signup" element={<Signup />} />
                 </Routes>

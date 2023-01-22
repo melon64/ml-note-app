@@ -174,10 +174,26 @@ def get_my_posts():
         for post in groups_collection.find_one({"_id": group})["posts"]:
             posts.append(posts_collection.find_one({"_id": post})) 
     if posts:
-        return jsonpickle.encode(posts), 200
+        return parse_json(posts), 200
     else:
         return jsonify({'msg': 'No posts found'}), 404
 
+#get all posts in a group
+@app.route("/api/v1/posts/<group_id>", methods=["GET"])
+@jwt_required()
+def get_posts(group_id):
+    group = groups_collection.find_one({"_id": ObjectId(group_id)})
+    if group:
+        if get_jwt_identity() in group["members"]:
+            posts = []
+            for post in group["posts"]:
+                posts.append(posts_collection.find_one({"_id": post}))
+            if posts:
+                return parse_json(posts), 200
+            else:
+                return jsonify({'msg': 'No posts found'}), 404
+        else:
+            return jsonify({'msg': 'You are not a member of this group'}), 401
 
 @app.route("/api/v1/users/<username>", methods=["GET"])
 def get_user(username):
