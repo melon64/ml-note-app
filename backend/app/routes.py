@@ -10,6 +10,9 @@ from app import users_collection, groups_collection, posts_collection
 import openai
 from app.config import settings
 from app import nlp
+from googleocr.test_image_parse import detect_handwritten_ocr
+from googleocr.notes_classifier import classify_text
+from googleocr.suggestions import get_suggestions
 
 
 openai.api_key = settings.OPENAI_API_KEY
@@ -139,20 +142,23 @@ def get_groups():
 def create_post():
     new_post = request.get_json()
     new_post["author"] = get_jwt_identity()
-    new_post["content"] = new_post["content"]
     new_post["image"] = new_post["image"]
-    new_post["tags"] = new_post["tags"]
+    content = detect_handwritten_ocr(new_post["image"])
     
     response = openai.Completion.create(
             model="text-davinci-003",
-            prompt=nlp.generate_prompt(new_post["content"]),
+            prompt=nlp.generate_prompt(content),
             temperature=0.6,
             max_tokens=1000,
         )
 
     new_post["suggestions"] = response["choices"][0]["text"].split(",")
+    tag1 = get_suggestions(new_post["image"]).split(", ")
+    tag2 = [str(classify_text(new_post["image"]))]
+    for tag in tag1:
+        tag2.append(tag)
+    new_post["tags"]  = tag2
     posts_collection.insert_one(new_post)
-    print(response)
 
     for group in users_collection.find_one({"username": get_jwt_identity()})["groups"]:
         groups_collection.update_one({"_id": group }, {"$push": {"posts": new_post["_id"]}})
