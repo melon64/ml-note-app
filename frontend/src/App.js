@@ -11,6 +11,7 @@ import Documents from './pages/docs';
 import Upload from './pages/upload';
 import Login from './pages/login';
 import { setAuthToken } from './utils/auth';
+import SpecGroups from './pages/specgroups';
 
 function App() {
 
@@ -26,7 +27,7 @@ function App() {
   return (
     <Router>
       <Navbar />
-      <Routes>
+      <Routes>    
         <Route exact path="/" element={<Home />} />
         <Route exact path="/signup" element={<Signup />} />
         <Route exact path="/joingroup" element={<JoinGroup />} />

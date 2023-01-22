@@ -2,7 +2,7 @@ import io
 from base64 import b64decode
 import os
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/home/binaric/code/ml-note-app/backend/tagteam-375402-1e4c69c6bed5.json"
+#os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/home/binaric/code/ml-note-app/backend/tagteam-375402-1e4c69c6bed5.json"
 
 
 def detect_handwritten_ocr(img):
