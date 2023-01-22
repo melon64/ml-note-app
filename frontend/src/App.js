@@ -16,7 +16,11 @@ function App() {
 
   const token = localStorage.getItem("token");
   if(token) {
+    console.log("logged in")
+    console.log(token)
     setAuthToken(token);
+  }else{
+    console.log("no token, please login")
   }
   
   return (

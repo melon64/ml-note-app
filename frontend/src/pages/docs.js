@@ -1,6 +1,27 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { isLoggedIn } from '../utils/auth';
+import axios from 'axios';
+
 const Documents = () => {
+
+    const [docs, setDocs] = useState([]);
+
+    useEffect(() => {
+        axios.get('http://localhost:5000/api/v1/posts/me')
+        .then(response => {
+            setDocs(response.data);
+        })
+        .catch(err => console.log(err));
+    }, []);
+
+    if(isLoggedIn()){
+        console.log("logged in")
+    }else{
+       window.location.href = '/login';
+    }
+    console.log(docs);
+
     return ( 
     <div>
         <link rel="stylesheet" href="index.css"></link>

@@ -17,11 +17,11 @@ export default function Login(){
           "http://127.0.0.1:5000/api/v1/login",
           login_payload
         ).then(response => {
-            const token  =  response.data.token;
+            const token  =  response.data.access_token;
             localStorage.setItem("token", token);
             console.log(token)
             setAuthToken(token);
-            window.location.href = '/'
+            window.location.href = '/docs'
         }).catch(err => console.log(err));
     };
 
