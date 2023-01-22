@@ -8,6 +8,7 @@ import JoinGroup from './pages/joingroup';
 import Groups from './pages/groups';
 import Documents from './pages/docs';
 import Upload from './pages/upload';
+import Login from './pages/login';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/groups" element={<Groups />} />
         <Route path="/docs" element={<Documents />} />
         <Route path="/upload" element={<Upload />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
 
     </Router>

@@ -13,6 +13,7 @@ from app import nlp
 from googleocr.test_image_parse import detect_handwritten_ocr
 from googleocr.notes_classifier import classify_text
 from googleocr.suggestions import get_suggestions
+import jsonpickle
 
 
 openai.api_key = settings.OPENAI_API_KEY
@@ -163,6 +164,20 @@ def create_post():
     for group in users_collection.find_one({"username": get_jwt_identity()})["groups"]:
         groups_collection.update_one({"_id": group }, {"$push": {"posts": new_post["_id"]}})
     return jsonify({'msg': 'Post created successfully'}), 201
+
+#get all posts that are in groups that current user is a member of
+@app.route("/api/v1/posts/me", methods=["GET"])
+@jwt_required()
+def get_my_posts():
+    posts = []
+    for group in users_collection.find_one({"username": get_jwt_identity()})["groups"]:
+        for post in groups_collection.find_one({"_id": group})["posts"]:
+            posts.append(posts_collection.find_one({"_id": post})) 
+    if posts:
+        return jsonpickle.encode(posts), 200
+    else:
+        return jsonify({'msg': 'No posts found'}), 404
+
 
 @app.route("/api/v1/users/<username>", methods=["GET"])
 def get_user(username):
